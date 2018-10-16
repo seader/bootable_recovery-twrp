@@ -118,7 +118,7 @@ void Strace_init_Stop(void) {
 		pid_t retpid = waitpid(pid_strace, &status, WNOHANG);
 
 		kill(pid_strace, SIGTERM);
-		for (timeout = 5; retpid == 0 && timeout; --timeout) {
+		for (timeout = 8; retpid == 0 && timeout; --timeout) {
 			sleep(1);
 			retpid = waitpid(pid_strace, &status, WNOHANG);
 		}
@@ -127,7 +127,7 @@ void Strace_init_Stop(void) {
 		else {
 			// SIGTERM didn't work, kill it instead
 			kill(pid_strace, SIGKILL);
-			for (timeout = 5; retpid == 0 && timeout; --timeout) {
+			for (timeout = 8; retpid == 0 && timeout; --timeout) {
 				sleep(1);
 				retpid = waitpid(pid_strace, &status, WNOHANG);
 			}
@@ -898,7 +898,7 @@ int Exec_vdc_cryptfs(const string& command, const string& argument, vdc_ReturnVa
 			if (retpid == 0 && timeout == 0) {
 				LOGERROR("exec_vdc_cryptfs: took too long, killing process\n");
 				kill(pid, SIGKILL);
-				for (timeout = 5; retpid == 0 && timeout; --timeout) {
+				for (timeout = 8; retpid == 0 && timeout; --timeout) {
 					sleep(1);
 					retpid = waitpid(pid, &status, WNOHANG);
 				}

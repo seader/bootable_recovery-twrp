@@ -152,7 +152,7 @@ int TWFunc::Wait_For_Child_Timeout(pid_t pid, int *status, const string& Child_N
 	if (retpid == 0 && timeout == 0) {
 		LOGERR("%s took too long, killing process\n", Child_Name.c_str());
 		kill(pid, SIGKILL);
-		for (timeout = 5; retpid == 0 && timeout; --timeout) {
+		for (timeout = 8; retpid == 0 && timeout; --timeout) {
 			sleep(1);
 			retpid = waitpid(pid, status, WNOHANG);
 		}
@@ -923,7 +923,7 @@ void TWFunc::Fixup_Time_On_Boot(const string& time_paths /* = "" */)
 	std::vector<std::string> paths; // space separated list of paths
 	if (time_paths.empty()) {
 		paths = Split_String("/data/vendor/time/ /persist/time/", " ");
-		if (!PartitionManager.Mount_By_Path("/data", false) && !PartitionManager.Mount_By_Path("/vendor", false))
+		if (!PartitionManager.Mount_By_Path("/data", false) && !PartitionManager.Mount_By_Path("/persist", false))
 			return;
 	} else {
 		// When specific path(s) are used, Fixup_Time needs those
