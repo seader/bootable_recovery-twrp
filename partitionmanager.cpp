@@ -84,6 +84,12 @@ extern "C" {
 
 extern bool datamedia;
 
+bool is_file_exist(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 TWPartitionManager::TWPartitionManager(void) {
 	mtp_was_enabled = false;
 	mtp_write_fd = -1;
@@ -1096,6 +1102,18 @@ int TWPartitionManager::Run_Restore(const string& Restore_Name) {
 				part_settings.partition_count++;
 				if (!Restore_Partition(&part_settings))
 					return false;
+				if (part_settings.Part->Backup_Name == "data") {
+					int lge_wipe;
+				        DataManager::GetValue(TW_LG_LOCK_WIPE_VAR, lge_wipe);
+				        if (lge_wipe) {
+						if (is_file_exist("/data/system/locksettings.db") == true) {
+							gui_msg("lge_wipe=Removing lockscreen settings files...");
+							unlink("/data/system/locksettings.db");
+							unlink("/data/system/locksettings.db-shm");
+							unlink("/data/system/locksettings.db-wal");
+						}
+					}
+				}
 			} else {
 				gui_msg(Msg(msg::kError, "restore_unable_locate=Unable to locate '{1}' partition for restoring.")(restore_path));
 			}
