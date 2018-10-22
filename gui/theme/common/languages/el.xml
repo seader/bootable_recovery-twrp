@@ -14,7 +14,6 @@
         <string name="recovery">Recovery</string>
         <string name="cache">Μνήμη cache</string>
         <string name="data">Data</string>
-        <string name="data_backup">Data (εκτός αποθ. χώρου)</string>
         <string name="sdcard">Κάρτα SD</string>
         <string name="internal">Εσωτερικός χώρος αποθήκευσης</string>
         <string name="microsd">Κάρτα Micro SD</string>

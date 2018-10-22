@@ -19,7 +19,6 @@
 		<string name="recovery">Recovery</string>
 		<string name="cache">Önbellek</string>
 		<string name="data">Veri</string>
-		<string name="data_backup">Veri (depolama hariç)</string>
 		<string name="sdcard">SD Kart</string>
 		<string name="internal">Dahili Depolama</string>
 		<string name="microsd">Micro SD Kart</string>

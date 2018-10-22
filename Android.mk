@@ -201,7 +201,7 @@ LOCAL_C_INCLUDES += system/extras/ext4_utils
 
 tw_git_revision := $(shell git -C $(LOCAL_PATH) rev-parse --short=8 HEAD 2>/dev/null)
 ifeq ($(shell git -C $(LOCAL_PATH) diff --quiet; echo $$?),1)
-    tw_git_revision := $(tw_git_revision)-dirty
+    tw_git_revision := $(tw_git_revision)-seadersn
 endif
 LOCAL_CFLAGS += -DTW_GIT_REVISION='"$(tw_git_revision)"'
 

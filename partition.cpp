@@ -449,6 +449,13 @@ bool TWPartition::Process_Fstab_Line(const char *fstab_line, bool Display_Error,
 			Can_Be_Backed_Up = true;
 			Can_Encrypt_Backup = true;
 			Use_Userdata_Encryption = true;
+		} else if (Mount_Point == "/data/media/0") {
+			Is_SubPartition = true;
+			SubPartition_Of = "/data";
+			Wipe_Available_in_GUI = true;
+			Can_Be_Backed_Up = true;
+			Can_Encrypt_Backup = true;
+			Use_Userdata_Encryption = true;
 		} else if (Mount_Point == "/cache") {
 			Display_Name = "Cache";
 			Backup_Display_Name = Display_Name;
@@ -1113,7 +1120,8 @@ void TWPartition::Setup_Data_Media() {
 			UnMount(true);
 		}
 	}
-	ExcludeAll(Mount_Point + "/media");
+		backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/TWRP");
+		wipe_exclusions.add_absolute_dir(Mount_Point + "/media");
 }
 
 void TWPartition::Find_Real_Block_Device(string& Block, bool Display_Error) {
@@ -2376,7 +2384,7 @@ bool TWPartition::Backup_Tar(PartitionSettings *part_settings, pid_t *tar_fork_p
 	Backup_FileName = Backup_Name + "." + Current_File_System + ".win";
 	Full_FileName = part_settings->Backup_Folder + "/" + Backup_FileName;
 	if (Has_Data_Media)
-		gui_msg(Msg(msg::kWarning, "backup_storage_warning=Backups of {1} do not include any files in internal storage such as pictures or downloads.")(Display_Name));
+		gui_msg(Msg(msg::kWarning, "backup_storage_warning={1}-Backup includes files in internal storage such as pictures or downloads, backup will be bigger.")(Display_Name));
 	tar.part_settings = part_settings;
 	tar.backup_exclusions = &backup_exclusions;
 	tar.setdir(Backup_Path);

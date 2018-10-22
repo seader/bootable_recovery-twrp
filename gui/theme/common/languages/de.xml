@@ -19,7 +19,6 @@
 		<string name="recovery">Recovery</string>
 		<string name="cache">Cache</string>
 		<string name="data">Data</string>
-		<string name="data_backup">Data (ohne /data/media)</string>
 		<string name="sdcard">SD-Karte</string>
 		<string name="internal">Interner Speicher</string>
 		<string name="microsd">Micro SD-Karte</string>
@@ -588,8 +587,8 @@
 		<string name="cannot_wipe">Partition {1} kann nicht gelöscht werden.</string>
 		<string name="remove_all">Entferne alle Dateien unter '{1}'</string>
 		<string name="wiping_data">Lösche Daten, aber verschone internen Speicher...</string>
+		<string name="backup_storage_warning">{1}-Backups beinhalten den internen Speicher, dieses Backup wird wohl ziemlich groß... :)</string>
 		<string name="backing_up">Sichere {1}...</string>
-		<string name="backup_storage_warning">Backups of {1} do not include any files in internal storage such as pictures or downloads.</string>
 		<string name="backing">Sichere</string>
 		<string name="backup_size">Sicherung von '{1}' hat 0 Byte.</string>
 		<string name="datamedia_fs_restore">WARNUNG: Diese Sicherung wurde mit dem Dateisystem {1} erstellt! Es kann sein, dass wieder zu {1} gewechselt werden muss, damit das Gerät nach der Wiederherstellung auch startet.</string>

@@ -18,7 +18,6 @@
 		<string name="recovery">Recovery</string>
 		<string name="cache">Cache</string>
 		<string name="data">Data</string>
-		<string name="data_backup">Data (искл. Storage)</string>
 		<string name="sdcard">SDcard</string>
 		<string name="internal">Память устройства</string>
 		<string name="microsd">Micro SDCard</string>
