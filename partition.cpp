@@ -1120,8 +1120,11 @@ void TWPartition::Setup_Data_Media() {
 			UnMount(true);
 		}
 	}
-		backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/TWRP");
-		wipe_exclusions.add_absolute_dir(Mount_Point + "/media");
+	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/TWRP");
+	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Download");
+	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Movies");
+	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Music");
+	wipe_exclusions.add_absolute_dir(Mount_Point + "/media");
 }
 
 void TWPartition::Find_Real_Block_Device(string& Block, bool Display_Error) {
