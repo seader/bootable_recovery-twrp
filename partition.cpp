@@ -1120,7 +1120,7 @@ void TWPartition::Setup_Data_Media() {
 			UnMount(true);
 		}
 	}
-	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/TWRP");
+	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/TWRP/BACKUPS");
 	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Download");
 	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Movies");
 	backup_exclusions.add_absolute_dir(Mount_Point + "/media/0/Music");
