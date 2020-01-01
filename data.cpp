@@ -750,6 +750,7 @@ void DataManager::SetDefaultValues()
 	mPersist.SetValue(TW_DISABLE_FREE_SPACE_VAR, "0");
 	mPersist.SetValue(TW_FORCE_DIGEST_CHECK_VAR, "0");
 	mPersist.SetValue(TW_USE_COMPRESSION_VAR, "0");
+	mPersist.SetValue(TW_LG_LOCK_WIPE_VAR, "1");
 	mPersist.SetValue(TW_TIME_ZONE_VAR, "CST6CDT,M3.2.0,M11.1.0");
 	mPersist.SetValue(TW_GUI_SORT_ORDER, "1");
 	mPersist.SetValue(TW_RM_RF_VAR, "0");
@@ -912,10 +913,14 @@ void DataManager::SetDefaultValues()
 	mConst.SetValue("tw_app_installed_in_system", "0");
 #else
 	mConst.SetValue("tw_oem_build", "0");
+  #ifdef TW_EXCLUDE_TWRPAPP
+	mConst.SetValue("tw_app_prompt", "-1");
+  #else
 	mPersist.SetValue("tw_app_prompt", "1");
 	mPersist.SetValue("tw_app_install_system", "1");
 	mData.SetValue("tw_app_install_status", "0"); // 0 = no status, 1 = not installed, 2 = already installed
 	mData.SetValue("tw_app_installed_in_system", "0");
+  #endif
 #endif
 
 	mData.SetValue("tw_enable_adb_backup", "0");

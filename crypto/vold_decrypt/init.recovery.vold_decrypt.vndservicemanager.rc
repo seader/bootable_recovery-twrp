@@ -1,0 +1,6 @@
+service vndservicemanager /vendor/bin/vndservicemanager /dev/vndbinder
+    class core
+    user root
+    group root readproc
+    writepid /dev/cpuset/system-background/tasks
+

@@ -1,0 +1,315 @@
+diff --git a/Android.mk b/Android.mk
+index d0d962f5..12279747 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -398,6 +398,9 @@ endif
+ ifneq ($(TW_CLOCK_OFFSET),)
+ 	LOCAL_CFLAGS += -DTW_CLOCK_OFFSET=$(TW_CLOCK_OFFSET)
+ endif
++ifeq ($(TW_EXCLUDE_TWRPAPP),true)
++    LOCAL_CFLAGS += -DTW_EXCLUDE_TWRPAPP
++endif
+ TWRP_REQUIRED_MODULES += \
+     dump_image \
+     erase_image \
+diff --git a/crypto/fde/cryptfs.cpp b/crypto/fde/cryptfs.cpp
+index 83522968..f7169203 100644
+--- a/crypto/fde/cryptfs.cpp
++++ b/crypto/fde/cryptfs.cpp
+@@ -1664,6 +1664,13 @@ int cryptfs_verify_passwd(const char *passwd)
+         return -1;
+     }
+ 
++    if (crypt_ftr.flags & CRYPT_DATA_CORRUPT) {
++        /* The cryptfs metadata claims the device is corrupt, log a warning, but try
++         * anyways in case the metadata is mistaken. */
++        SLOGW("Warning: crypto footer claims data is corrupt (CRYPT_DATA_CORRUPT set),"
++              "trying decryption anyways...\n");
++    }
++
+     if (crypt_ftr.flags & CRYPT_MNT_KEY_UNENCRYPTED) {
+         /* If the device has no password, then just say the password is valid */
+         rc = 0;
+diff --git a/crypto/vold_decrypt/init.recovery.vold_decrypt.rc b/crypto/vold_decrypt/init.recovery.vold_decrypt.rc
+index 65983eb2..965fd733 100755
+--- a/crypto/vold_decrypt/init.recovery.vold_decrypt.rc
++++ b/crypto/vold_decrypt/init.recovery.vold_decrypt.rc
+@@ -8,3 +8,6 @@ service sys_vold /system/bin/vold \
+     setenv LD_LIBRARY_PATH /system/lib64:/system/lib
+     disabled
+     oneshot
++    class core
++    writepid /dev/cpuset/foreground/tasks
++    group root reserved_disk
+diff --git a/crypto/vold_decrypt/init.recovery.vold_decrypt.vndservicemanager.rc b/crypto/vold_decrypt/init.recovery.vold_decrypt.vndservicemanager.rc
+new file mode 100644
+index 00000000..41bdb6ad
+--- /dev/null
++++ b/crypto/vold_decrypt/init.recovery.vold_decrypt.vndservicemanager.rc
+@@ -0,0 +1,6 @@
++service vndservicemanager /vendor/bin/vndservicemanager /dev/vndbinder
++    class core
++    user root
++    group root readproc
++    writepid /dev/cpuset/system-background/tasks
++
+diff --git a/crypto/vold_decrypt/vold_decrypt.cpp b/crypto/vold_decrypt/vold_decrypt.cpp
+index ac872ea2..90cab889 100644
+--- a/crypto/vold_decrypt/vold_decrypt.cpp
++++ b/crypto/vold_decrypt/vold_decrypt.cpp
+@@ -119,7 +119,7 @@ void Strace_init_Stop(void) {
+ 		pid_t retpid = waitpid(pid_strace, &status, WNOHANG);
+ 
+ 		kill(pid_strace, SIGTERM);
+-		for (timeout = 5; retpid == 0 && timeout; --timeout) {
++		for (timeout = 8; retpid == 0 && timeout; --timeout) {
+ 			sleep(1);
+ 			retpid = waitpid(pid_strace, &status, WNOHANG);
+ 		}
+@@ -128,7 +128,7 @@ void Strace_init_Stop(void) {
+ 		else {
+ 			// SIGTERM didn't work, kill it instead
+ 			kill(pid_strace, SIGKILL);
+-			for (timeout = 5; retpid == 0 && timeout; --timeout) {
++			for (timeout = 8; retpid == 0 && timeout; --timeout) {
+ 				sleep(1);
+ 				retpid = waitpid(pid_strace, &status, WNOHANG);
+ 			}
+@@ -972,7 +972,7 @@ int Exec_vdc_cryptfs(const string& command, const string& argument, vdc_ReturnVa
+ 			if (retpid == 0 && timeout == 0) {
+ 				LOGERROR("exec_vdc_cryptfs: took too long, killing process\n");
+ 				kill(pid, SIGKILL);
+-				for (timeout = 5; retpid == 0 && timeout; --timeout) {
++				for (timeout = 8; retpid == 0 && timeout; --timeout) {
+ 					sleep(1);
+ 					retpid = waitpid(pid, &status, WNOHANG);
+ 				}
+diff --git a/data.cpp b/data.cpp
+index 088dbda6..7c70f049 100755
+--- a/data.cpp
++++ b/data.cpp
+@@ -750,6 +750,7 @@ void DataManager::SetDefaultValues()
+ 	mPersist.SetValue(TW_DISABLE_FREE_SPACE_VAR, "0");
+ 	mPersist.SetValue(TW_FORCE_DIGEST_CHECK_VAR, "0");
+ 	mPersist.SetValue(TW_USE_COMPRESSION_VAR, "0");
++	mPersist.SetValue(TW_LG_LOCK_WIPE_VAR, "1");
+ 	mPersist.SetValue(TW_TIME_ZONE_VAR, "CST6CDT,M3.2.0,M11.1.0");
+ 	mPersist.SetValue(TW_GUI_SORT_ORDER, "1");
+ 	mPersist.SetValue(TW_RM_RF_VAR, "0");
+@@ -912,10 +913,14 @@ void DataManager::SetDefaultValues()
+ 	mConst.SetValue("tw_app_installed_in_system", "0");
+ #else
+ 	mConst.SetValue("tw_oem_build", "0");
++  #ifdef TW_EXCLUDE_TWRPAPP
++	mConst.SetValue("tw_app_prompt", "-1");
++  #else
+ 	mPersist.SetValue("tw_app_prompt", "1");
+ 	mPersist.SetValue("tw_app_install_system", "1");
+ 	mData.SetValue("tw_app_install_status", "0"); // 0 = no status, 1 = not installed, 2 = already installed
+ 	mData.SetValue("tw_app_installed_in_system", "0");
++  #endif
+ #endif
+ 
+ 	mData.SetValue("tw_enable_adb_backup", "0");
+diff --git a/gui/theme/common/languages/en.xml b/gui/theme/common/languages/en.xml
+index 4a0ac7fd..5a9df0e7 100755
+--- a/gui/theme/common/languages/en.xml
++++ b/gui/theme/common/languages/en.xml
+@@ -719,5 +719,7 @@
+ 		<string name="include_kernel_log">Include Kernel Log</string>
+ 		<string name="sha2_chk">Use SHA2 for hashing</string>
+ 		<string name="unable_set_boot_slot">Error changing bootloader boot slot to {1}</string>
++		<string name="enable_backup_lock_wipe">Don't restore lockscreen settings</string>
++		<string name="lge_wipe">Leaving out lockscreen-settings...</string>
+ 	</resources>
+ </language>
+diff --git a/gui/theme/common/portrait.xml b/gui/theme/common/portrait.xml
+index e014cc53..7f606fa0 100755
+--- a/gui/theme/common/portrait.xml
++++ b/gui/theme/common/portrait.xml
+@@ -2455,6 +2455,13 @@
+ 				<listtype name="restore"/>
+ 			</partitionlist>
+ 
++			<checkbox>
++				<condition var1="tw_enable_adb_backup" op="=" var2="0"/>
++				<placement x="%indent%" y="%row16_y%"/>
++				<text>{@enable_backup_lock_wipe=Wipe LG lockscreen security when restoring data}</text>
++				<data variable="tw_wipe_lockscreen"/>
++			</checkbox>
++
+ 			<checkbox>
+ 				<condition var1="tw_enable_adb_backup" op="=" var2="0"/>
+ 				<placement x="%indent%" y="%row17_y%"/>
+@@ -3130,6 +3137,9 @@
+ 				<listitem name="{@restore_enable_digest_chk=Enable Digest verification of backup files}">
+ 					<data variable="tw_skip_digest_check"/>
+ 				</listitem>
++				<listitem name="{@enable_backup_lock_wipe=Don't restore lockscreen-settings}">
++					<data variable="tw_wipe_lockscreen"/>
++				</listitem>
+ 				<listitem name="{@use24clock_chk=Use 24-hour clock}">
+ 					<data variable="tw_military_time"/>
+ 				</listitem>
+@@ -3137,6 +3147,7 @@
+ 					<data variable="tw_samsung_navbar"/>
+ 				</listitem>
+ 				<listitem name="{@reboot_install_app_prompt_install=Prompt to install TWRP app on every reboot}">
++					<condition var1="tw_app_prompt" op="!=" var2="-1"/>
+ 					<data variable="tw_app_prompt"/>
+ 				</listitem>
+ 				<listitem name="{@simact_chk=Simulate actions for theme testing}">
+diff --git a/partition.cpp b/partition.cpp
+index aa82c09e..6ec74747 100644
+--- a/partition.cpp
++++ b/partition.cpp
+@@ -2435,9 +2435,9 @@ bool TWPartition::Wipe_Data_Without_Wiping_Media_Func(const string& parent __unu
+ 
+ void TWPartition::Wipe_Crypto_Key() {
+ 	Find_Actual_Block_Device();
+-	if (Crypto_Key_Location.empty())
+-		return;
+-	else if (Crypto_Key_Location == "footer") {
++    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
++    TWFunc::Exec_Cmd(Command);
++	if (Crypto_Key_Location == "footer") {
+ 		int fd = open(Actual_Block_Device.c_str(), O_RDWR);
+ 		if (fd < 0) {
+ 			gui_print_color("warning", "Unable to open '%s' to wipe crypto key\n", Actual_Block_Device.c_str());
+@@ -2471,7 +2471,7 @@ void TWPartition::Wipe_Crypto_Key() {
+ 		close(fd);
+ 	} else {
+ 		if (TWFunc::IOCTL_Get_Block_Size(Crypto_Key_Location.c_str()) >= 16384LLU) {
+-			string Command = "dd of='" + Crypto_Key_Location + "' if=/dev/zero bs=16384 count=1";
++			string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+ 			TWFunc::Exec_Cmd(Command);
+ 		} else {
+ 			LOGINFO("Crypto key location reports size < 16K so not wiping crypto footer.\n");
+diff --git a/partitionmanager.cpp b/partitionmanager.cpp
+index 41d8af20..1b2091c9 100755
+--- a/partitionmanager.cpp
++++ b/partitionmanager.cpp
+@@ -93,6 +93,12 @@ extern "C" {
+ 
+ extern bool datamedia;
+ 
++bool is_file_exist(const char *fileName)
++{
++    std::ifstream infile(fileName);
++    return infile.good();
++}
++
+ TWPartitionManager::TWPartitionManager(void) {
+ 	mtp_was_enabled = false;
+ 	mtp_write_fd = -1;
+@@ -1146,6 +1152,18 @@ int TWPartitionManager::Run_Restore(const string& Restore_Name) {
+ 				part_settings.partition_count++;
+ 				if (!Restore_Partition(&part_settings))
+ 					return false;
++				if (part_settings.Part->Backup_Name == "data") {
++					int lge_wipe;
++				        DataManager::GetValue(TW_LG_LOCK_WIPE_VAR, lge_wipe);
++				        if (lge_wipe) {
++						if (is_file_exist("/data/system/locksettings.db") == true) {
++							gui_msg("lge_wipe=Removing lockscreen settings files...");
++							unlink("/data/system/locksettings.db");
++							unlink("/data/system/locksettings.db-shm");
++							unlink("/data/system/locksettings.db-wal");
++						}
++					}
++				}
+ 			} else {
+ 				gui_msg(Msg(msg::kError, "restore_unable_locate=Unable to locate '{1}' partition for restoring.")(restore_path));
+ 			}
+@@ -1454,11 +1472,14 @@ int TWPartitionManager::Wipe_Android_Secure(void) {
+ 
+ int TWPartitionManager::Format_Data(void) {
+ 	TWPartition* dat = Find_Partition_By_Path("/data");
++    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
++    TWFunc::Exec_Cmd(Command);
+ 
+ 	if (dat != NULL) {
+ 		if (!dat->UnMount(true))
+ 			return false;
+-
++        string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
++        TWFunc::Exec_Cmd(Command);
+ 		return dat->Wipe_Encryption();
+ 	} else {
+ 		gui_msg(Msg(msg::kError, "unable_to_locate=Unable to locate {1}.")("/data"));
+diff --git a/prebuilt/Android.mk b/prebuilt/Android.mk
+index d3307999..57fd70f3 100644
+--- a/prebuilt/Android.mk
++++ b/prebuilt/Android.mk
+@@ -553,15 +553,6 @@ ifeq ($(TW_USE_TOOLBOX), true)
+     include $(BUILD_PREBUILT)
+ endif
+ 
+-#TWRP App "placeholder"
+-include $(CLEAR_VARS)
+-LOCAL_MODULE := me.twrp.twrpapp.apk
+-LOCAL_MODULE_TAGS := eng
+-LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
+-LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
+-LOCAL_SRC_FILES := $(LOCAL_MODULE)
+-include $(BUILD_PREBUILT)
+-
+ ifeq ($(TW_INCLUDE_CRYPTO), true)
+     ifneq ($(TW_CRYPTO_USE_SYSTEM_VOLD),)
+         ifneq ($(shell test $(PLATFORM_SDK_VERSION) -ge 28; echo $$?),0)
+@@ -584,4 +575,15 @@ ifeq ($(TW_INCLUDE_REPACKTOOLS), true)
+         $(warning into external/magisk-prebuilt)
+         $(error magiskboot prebuilts not present; exiting)
+     endif
++
++ifneq ($(TW_EXCLUDE_TWRPAPP),true)
++	#TWRP App "placeholder"
++	include $(CLEAR_VARS)
++	LOCAL_MODULE := me.twrp.twrpapp.apk
++	LOCAL_MODULE_TAGS := eng
++	LOCAL_MODULE_CLASS := RECOVERY_EXECUTABLES
++	LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/sbin
++	LOCAL_SRC_FILES := $(LOCAL_MODULE)
++	include $(BUILD_PREBUILT)
++endif
+ endif
+diff --git a/twrp-functions.cpp b/twrp-functions.cpp
+index 4386ff6f..d02e4721 100755
+--- a/twrp-functions.cpp
++++ b/twrp-functions.cpp
+@@ -157,7 +157,7 @@ int TWFunc::Wait_For_Child_Timeout(pid_t pid, int *status, const string& Child_N
+ 	if (retpid == 0 && timeout == 0) {
+ 		LOGERR("%s took too long, killing process\n", Child_Name.c_str());
+ 		kill(pid, SIGKILL);
+-		for (timeout = 5; retpid == 0 && timeout; --timeout) {
++		for (timeout = 8; retpid == 0 && timeout; --timeout) {
+ 			sleep(1);
+ 			retpid = waitpid(pid, status, WNOHANG);
+ 		}
+@@ -1005,8 +1005,8 @@ void TWFunc::Fixup_Time_On_Boot(const string& time_paths /* = "" */)
+ 
+ 	std::vector<std::string> paths; // space separated list of paths
+ 	if (time_paths.empty()) {
+-		paths = Split_String("/data/system/time/ /data/time/ /data/vendor/time/", " ");
+-		if (!PartitionManager.Mount_By_Path("/data", false))
++		paths = Split_String("/data/vendor/time/ /persist/time/", " ");
++		if (!PartitionManager.Mount_By_Path("/data", false) && !PartitionManager.Mount_By_Path("/persist", false))
+ 			return;
+ 	} else {
+ 		// When specific path(s) are used, Fixup_Time needs those
+diff --git a/variables.h b/variables.h
+index 76da715d..842dadc6 100644
+--- a/variables.h
++++ b/variables.h
+@@ -21,9 +21,10 @@
+ #define TW_VERSION_STR TW_MAIN_VERSION_STR TW_DEVICE_VERSION
+ 
+ #define TW_USE_COMPRESSION_VAR      "tw_use_compression"
++#define TW_LG_LOCK_WIPE_VAR	    	"tw_wipe_lockscreen"
+ #define TW_FILENAME                 "tw_filename"
+ #define TW_ZIP_INDEX                "tw_zip_index"
+-#define TW_ZIP_QUEUE_COUNT       "tw_zip_queue_count"
++#define TW_ZIP_QUEUE_COUNT       	"tw_zip_queue_count"
+ 
+ #define MAX_BACKUP_NAME_LEN 64
+ #define TW_BACKUP_TEXT              "tw_backup_text"

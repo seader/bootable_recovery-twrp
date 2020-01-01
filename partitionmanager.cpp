@@ -93,6 +93,12 @@ extern "C" {
 
 extern bool datamedia;
 
+bool is_file_exist(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 TWPartitionManager::TWPartitionManager(void) {
 	mtp_was_enabled = false;
 	mtp_write_fd = -1;
@@ -1146,6 +1152,18 @@ int TWPartitionManager::Run_Restore(const string& Restore_Name) {
 				part_settings.partition_count++;
 				if (!Restore_Partition(&part_settings))
 					return false;
+				if (part_settings.Part->Backup_Name == "data") {
+					int lge_wipe;
+				        DataManager::GetValue(TW_LG_LOCK_WIPE_VAR, lge_wipe);
+				        if (lge_wipe) {
+						if (is_file_exist("/data/system/locksettings.db") == true) {
+							gui_msg("lge_wipe=Removing lockscreen settings files...");
+							unlink("/data/system/locksettings.db");
+							unlink("/data/system/locksettings.db-shm");
+							unlink("/data/system/locksettings.db-wal");
+						}
+					}
+				}
 			} else {
 				gui_msg(Msg(msg::kError, "restore_unable_locate=Unable to locate '{1}' partition for restoring.")(restore_path));
 			}
@@ -1454,11 +1472,14 @@ int TWPartitionManager::Wipe_Android_Secure(void) {
 
 int TWPartitionManager::Format_Data(void) {
 	TWPartition* dat = Find_Partition_By_Path("/data");
+    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+    TWFunc::Exec_Cmd(Command);
 
 	if (dat != NULL) {
 		if (!dat->UnMount(true))
 			return false;
-
+        string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+        TWFunc::Exec_Cmd(Command);
 		return dat->Wipe_Encryption();
 	} else {
 		gui_msg(Msg(msg::kError, "unable_to_locate=Unable to locate {1}.")("/data"));
