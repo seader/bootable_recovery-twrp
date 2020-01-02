@@ -667,7 +667,7 @@ void TWPartition::Setup_Data_Partition(bool Display_Error) {
 			LOGINFO("Trying wrapped key.\n");
 			property_set("fbe.data.wrappedkey", "true");
 				if (!Decrypt_FBE_DE()) {
-					LOGERR("Unable to decrypt FBE device\n");
+					LOGINFO("Unable to decrypt FBE device\n");
 				}
 		}
 	}
@@ -2434,8 +2434,8 @@ bool TWPartition::Wipe_Data_Without_Wiping_Media_Func(const string& parent __unu
 }
 
 void TWPartition::Wipe_Crypto_Key() {
-	Find_Actual_Block_Device();
-    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+    Find_Actual_Block_Device();
+    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=4096 count=1";
     TWFunc::Exec_Cmd(Command);
 	if (Crypto_Key_Location == "footer") {
 		int fd = open(Actual_Block_Device.c_str(), O_RDWR);
@@ -2471,7 +2471,7 @@ void TWPartition::Wipe_Crypto_Key() {
 		close(fd);
 	} else {
 		if (TWFunc::IOCTL_Get_Block_Size(Crypto_Key_Location.c_str()) >= 16384LLU) {
-			string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+			string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=4096 count=1";
 			TWFunc::Exec_Cmd(Command);
 		} else {
 			LOGINFO("Crypto key location reports size < 16K so not wiping crypto footer.\n");

@@ -306,7 +306,7 @@ int TWPartitionManager::Process_Fstab(string Fstab_Filename, bool Display_Error)
 						LOGINFO("Trying wrapped key.\n");
 						property_set("fbe.data.wrappedkey", "true");
 						if (!Decrypt_Data->Decrypt_FBE_DE()) {
-							LOGERR("Unable to decrypt FBE device\n");
+							LOGINFO("Unable to decrypt FBE device\n");
 						}
 					}
 
@@ -1471,14 +1471,14 @@ int TWPartitionManager::Wipe_Android_Secure(void) {
 }
 
 int TWPartitionManager::Format_Data(void) {
-	TWPartition* dat = Find_Partition_By_Path("/data");
-    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+    TWPartition* dat = Find_Partition_By_Path("/data");
+    string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=4096 count=1";
     TWFunc::Exec_Cmd(Command);
 
 	if (dat != NULL) {
 		if (!dat->UnMount(true))
 			return false;
-        string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=16384 count=1";
+        string Command = "dd of='/dev/block/bootdevice/by-name/encrypt' if=/dev/zero bs=4096 count=1";
         TWFunc::Exec_Cmd(Command);
 		return dat->Wipe_Encryption();
 	} else {
