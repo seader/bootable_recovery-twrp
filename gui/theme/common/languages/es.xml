@@ -511,7 +511,6 @@
 		<string name="wiping_datamedia">Limpiando almacenamiento interno -- /data/media...</string>
 		<string name="unable_to_mount">Incapaz de montar {1}</string>
 		<string name="unable_to_mount_internal">Incapaz de montar almacenamiento_interno</string>
-		<string name="unable_to_mount_storage">Incapaz de montar almacenamiento</string>
 		<string name="fail_decrypt">Error al descifrar datos.</string>
 		<string name="no_crypto_support">No hay ningún soporte de cifrado compilado en esta compilación.</string>
 		<string name="decrypt_success_dev">Datos desencriptados satisfactoriamente, nuevo bloque de dispositivo: '{1}'</string>

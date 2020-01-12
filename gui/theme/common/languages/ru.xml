@@ -568,7 +568,6 @@
 		<string name="wiping_datamedia">Очистка внутренней памяти -- /data/media...</string>
 		<string name="unable_to_mount">Не удаётся смонтировать {1}</string>
 		<string name="unable_to_mount_internal">Не удаётся смонтировать internal_storage</string>
-		<string name="unable_to_mount_storage">Не удаётся смонтировать накопитель</string>
 		<string name="fail_decrypt">Не удаётся расшифровать data.</string>
 		<string name="no_crypto_support">Шифрование не добавлено в эту сборку, пинайте разработчика.</string>
 		<string name="decrypt_success_dev">Раздел Data успешно расшифрован, новое блочное устройство: '{1}'</string>

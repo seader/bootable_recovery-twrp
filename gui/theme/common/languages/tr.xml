@@ -541,7 +541,6 @@
 		<string name="wiping_datamedia">Dahili depolama temizleniyor -- /data/media...</string>
 		<string name="unable_to_mount">{1} bağlanamadı</string>
 		<string name="unable_to_mount_internal">Dahili depolama bağlanamadı</string>
-		<string name="unable_to_mount_storage">Depolama bağlanamadı</string>
 		<string name="fail_decrypt">Verilerin şifresi çözülemedi.</string>
 		<string name="no_crypto_support">Şifreleme desteği bu yapı içine derlenmemiştir.</string>
 		<string name="decrypt_success_dev">Veri başarıyla çözüldü, yeni blok aygıtı: '{1}'</string>

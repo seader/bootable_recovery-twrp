@@ -538,7 +538,6 @@
 		<string name="wiping_datamedia">Belső tároló törlése -- /data/media...</string>
 		<string name="unable_to_mount">{1} nem csatolható</string>
 		<string name="unable_to_mount_internal">Belső tároló csatolása sikertelen</string>
-		<string name="unable_to_mount_storage">Tároló csatolása sikertelen</string>
 		<string name="fail_decrypt">Nem sikerült visszafejteni az adatokat.</string>
 		<string name="no_crypto_support">Nincs titkosítási támogatás beleépítve ebbe a változatba.</string>
 		<string name="decrypt_success_dev">Adatok sikeresen visszafejtve, új blokk eszköz: '{1}'</string>

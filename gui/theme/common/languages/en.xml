@@ -571,7 +571,7 @@
 		<string name="wiping_datamedia">Wiping internal storage -- /data/media...</string>
 		<string name="unable_to_mount">Unable to mount {1}</string>
 		<string name="unable_to_mount_internal">Unable to mount internal_storage</string>
-		<string name="unable_to_mount_storage">Unable to mount storage</string>
+		<string name="unable_to_mount_storage">Unable to mount storage, decryption needed first</string>
 		<string name="fail_decrypt">Failed to decrypt data.</string>
 		<string name="no_crypto_support">No crypto support was compiled into this build.</string>
 		<string name="decrypt_success_dev">Data successfully decrypted, new block device: '{1}'</string>

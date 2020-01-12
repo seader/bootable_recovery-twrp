@@ -498,7 +498,6 @@
 		<string name="wiping_datamedia">Limpando o armazenamento interno... /data/media...</string>
 		<string name="unable_to_mount">Incapaz de montar {1}</string>
 		<string name="unable_to_mount_internal">Incapaz de montar memória interna</string>
-		<string name="unable_to_mount_storage">Incapaz de montar o armazenamento</string>
 		<string name="fail_decrypt">Falha ao descriptografar os dados.</string>
 		<string name="no_crypto_support">Não há suporte para criptografia compilada para esta compilação.</string>
 		<string name="decrypt_success_dev">Dados descriptografados com sucesso, o novo dispositivo de bloco: \'{1}\'</string>

@@ -522,7 +522,6 @@
         <string name="wiping_datamedia">Εκκαθάριση εσωτ. χώρου αποθ. -- /data/media...</string>
         <string name="unable_to_mount">Αδύνατη η προσάρτηση {1}</string>
         <string name="unable_to_mount_internal">Αδύνατη η προσάρτηση του internal_storage</string>
-        <string name="unable_to_mount_storage">Αδύνατη η προσάρτηση του χώρου αποθ.</string>
         <string name="fail_decrypt">Απέτυχε η αποκρυπτογράφηση δεδομένων.</string>
         <string name="no_crypto_support">Δεν έχει μεταγλωττιστεί υποστήριξη κρυπτογράφησης σε αυτό το build.</string>
         <string name="decrypt_success_dev">Τα δεδομένα αποκρυπτογραφήθηκαν, νέο μπλοκάρισμα συσκευής: '{1}'</string>

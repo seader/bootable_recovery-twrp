@@ -1640,7 +1640,7 @@ void TWPartitionManager::Update_System_Details(void) {
 	if (FreeStorage != NULL) {
 		// Attempt to mount storage
 		if (!FreeStorage->Mount(false)) {
-			gui_msg(Msg(msg::kError, "unable_to_mount_storage=Unable to mount storage"));
+			gui_msg(Msg(msg::kError, "unable_to_mount_storage=Unable to mount storage, decryption needed first"));
 			DataManager::SetValue(TW_STORAGE_FREE_SIZE, 0);
 		} else {
 			DataManager::SetValue(TW_STORAGE_FREE_SIZE, (int)(FreeStorage->Free / 1048576LLU));

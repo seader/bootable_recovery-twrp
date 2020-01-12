@@ -525,7 +525,6 @@
 		<string name="wiping_datamedia">Czyszczenie Pamięci Wewnętrznej -- /data/media...</string>
 		<string name="unable_to_mount">Nie można zamontować {1}</string>
 		<string name="unable_to_mount_internal">Nie można zamontować pamięci wewnętrznej</string>
-		<string name="unable_to_mount_storage">Nie można zamontować pamięci</string>
 		<string name="fail_decrypt">Niepowodzenie rozszyfrowywania danych.</string>
 		<string name="no_crypto_support">Brak obsługi crypto w tej kompilacji.</string>
 		<string name="decrypt_success_dev">Dane pomyślnie rozszyfrowane, nowe urządzenie blokowe: '{1}'</string>

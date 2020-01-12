@@ -538,7 +538,6 @@
 		<string name="wiping_datamedia">Lösche internen Speicher -- /data/media...</string>
 		<string name="unable_to_mount">Kann {1} nicht einhängen</string>
 		<string name="unable_to_mount_internal">Kann internen Speicher nicht einhängen</string>
-		<string name="unable_to_mount_storage">Kann Speicher nicht einhängen</string>
 		<string name="fail_decrypt">Entschlüsselung der Daten-Partition fehlgeschlagen.</string>
 		<string name="no_crypto_support">In diese Version wurde keine Krypto-Unterstützung eingebunden.</string>
 		<string name="decrypt_success_dev">Erfolgreich entschlüsselt, neues Blockgerät: '{1}'</string>

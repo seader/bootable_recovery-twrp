@@ -498,7 +498,6 @@
 		<string name="wiping_datamedia">Vymazávání interního úložiště -- /data/media...</string>
 		<string name="unable_to_mount">{1} nelze připojit</string>
 		<string name="unable_to_mount_internal">Nelze připojit interní úložiště</string>
-		<string name="unable_to_mount_storage">Nelze připojit úložiště</string>
 		<string name="fail_decrypt">Nelze dešifrovat data.</string>
 		<string name="no_crypto_support">Tato verze byla zkompilovaná bez podpory šifrování.</string>
 		<string name="decrypt_success_dev">Data byly úspěšne dešifrované, nový block device: \'{1}\'</string>

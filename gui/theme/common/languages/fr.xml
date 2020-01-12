@@ -510,7 +510,6 @@
         <string name="wiping_datamedia">Effacement du stockage interne -- /data/media...</string>
         <string name="unable_to_mount">Incapable de monter {1}</string>
         <string name="unable_to_mount_internal">Incapable de monter internal_storage</string>
-        <string name="unable_to_mount_storage">Incapable de monter le stockage</string>
         <string name="fail_decrypt">Échec de la décryption des données.</string>
         <string name="no_crypto_support">Le support cryptographique n'a pas été inclus dans cette compilation.</string>
         <string name="decrypt_success">Données décryptées correctement, nouvel appareil bloc: '{1}'</string>

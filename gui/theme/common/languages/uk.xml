@@ -518,7 +518,6 @@
 		<string name="wiping_datamedia">Очищення внутрішньої пам'яті -- /data/media...</string>
 		<string name="unable_to_mount">Не вдається змонтувати {1}</string>
 		<string name="unable_to_mount_internal">Не вдається змонтувати internal_storage</string>
-		<string name="unable_to_mount_storage">Не вдається змонтувати storage</string>
 		<string name="fail_decrypt">Не вдається розшифрувати data.</string>
 		<string name="no_crypto_support">Шифрування не підтримується у цій версії.</string>
 		<string name="decrypt_success_dev">Data успішно розшифрований, новий блочний пристрій: '{1}'</string>

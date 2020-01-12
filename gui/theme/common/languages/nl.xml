@@ -525,7 +525,6 @@
 		<string name="wiping_datamedia">Interne opslag legen --/data/media...</string>
 		<string name="unable_to_mount">Kan {1} niet koppelen</string>
 		<string name="unable_to_mount_internal">Kan internal_storage niet koppelen</string>
-		<string name="unable_to_mount_storage">Kan opslag niet koppelen</string>
 		<string name="fail_decrypt">Gegevens decoderen mislukt.</string>
 		<string name="no_crypto_support">Er is geen crypto ondersteuning gecompileerd in deze build.</string>
 		<string name="decrypt_success_dev">Data succesvol gedecodeerd, nieuw block device: \'{1}\'</string>

@@ -538,7 +538,6 @@
 		<string name="wiping_datamedia">Pulizia dell'archivio interno -- /data/media...</string>
 		<string name="unable_to_mount">Impossibile montare {1}</string>
 		<string name="unable_to_mount_internal">Impossibile montare l'archivio interno</string>
-		<string name="unable_to_mount_storage">Impossibile montare l'archivio</string>
 		<string name="fail_decrypt">Decriptazione dei dati fallita.</string>
 		<string name="no_crypto_support">In questa build non è stato integrato alcun supporto per la crittografia.</string>
 		<string name="decrypt_success_dev">Dati decriptati con successo. Nuovo dispositivo di memoria: '{1}'</string>
