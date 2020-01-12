@@ -2435,7 +2435,7 @@ bool TWPartition::Wipe_Data_Without_Wiping_Media_Func(const string& parent __unu
 
 void TWPartition::Wipe_Crypto_Key() {
     Find_Actual_Block_Device();
-    string Command = "dd of=/dev/block/bootdevice/by-name/encrypt if=/dev/zero bs=4096 count=1";
+    string Command = "dd of=/dev/block/bootdevice/by-name/encrypt if=/dev/zero bs=4096 count=1 && dd of=/dev/block/bootdevice/by-name/eksst if=/dev/zero bs=4096 count=1";
     TWFunc::Exec_Cmd(Command);
 	if (Crypto_Key_Location == "footer") {
 		int fd = open(Actual_Block_Device.c_str(), O_RDWR);
@@ -2471,7 +2471,7 @@ void TWPartition::Wipe_Crypto_Key() {
 		close(fd);
 	} else {
 		if (TWFunc::IOCTL_Get_Block_Size(Crypto_Key_Location.c_str()) >= 16384LLU) {
-			string Command = "dd of=/dev/block/bootdevice/by-name/encrypt if=/dev/zero bs=4096 count=1";
+			string Command = "dd of=/dev/block/bootdevice/by-name/encrypt if=/dev/zero bs=4096 count=1 && dd of=/dev/block/bootdevice/by-name/eksst if=/dev/zero bs=4096 count=1";
 			TWFunc::Exec_Cmd(Command);
 		} else {
 			LOGINFO("Crypto key location reports size < 16K so not wiping crypto footer.\n");
